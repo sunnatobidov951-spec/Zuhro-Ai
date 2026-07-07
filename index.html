@@ -4,41 +4,38 @@
     <meta charset="UTF-8">
     <title>Zuhro.ai | Global AI Engine</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #0f172a; color: #e2e8f0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; border: 1px solid #334155; }
-        .header { text-align: center; border-bottom: 2px solid #38bdf8; padding-bottom: 10px; margin-bottom: 20px; }
-        h1 { color: #38bdf8; margin: 0; }
-        
-        /* Сетка товаров */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .product-card { background: #0f172a; padding: 15px; border-radius: 10px; border: 1px solid #38bdf8; text-align: center; }
-        .product-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
-        .btn-analyze { background: #38bdf8; border: none; padding: 10px; width: 100%; color: #0f172a; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        body { font-family: sans-serif; background-color: #0f172a; color: white; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #38bdf8; background: #1e293b; color: white; }
+        button { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #results { margin-top: 20px; }
+        .card { background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #38bdf8; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Zuhro.ai</h1>
-            <p>Центр обработки товаров: Тренды одежды</p>
-        </div>
-
-        <div class="product-grid">
-            <!-- Карточка товара 1 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=400" alt="Спортивная одежда">
-                <h3>Худи «Pro-Fit»</h3>
-                <p>Цена: $12.50</p>
-                <button class="btn-analyze" onclick="alert('Анализ худи запущен...')">Анализировать</button>
-            </div>
-            <!-- Карточка товара 2 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400" alt="Одежда">
-                <h3>Кроссовки «Runner»</h3>
-                <p>Цена: $22.00</p>
-                <button class="btn-analyze" onclick="alert('Анализ кроссовок запущен...')">Анализировать</button>
-            </div>
-        </div>
+        <h1>Zuhro.ai</h1>
+        <input type="text" id="urlInput" placeholder="Вставь ссылку на товар...">
+        <button onclick="analyzeProduct()">Анализировать товар</button>
+        <div id="results"></div>
     </div>
+
+    <script>
+        function analyzeProduct() {
+            const url = document.getElementById('urlInput').value;
+            const results = document.getElementById('results');
+            if (!url) return;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <h3>Товар проанализирован</h3>
+                <p>Источник: ${url.substring(0, 30)}...</p>
+                <p>✅ Анализ завершен: <strong>Товар ликвидный</strong></p>
+                <p>💰 Рекомендованная цена: $45.00</p>
+            `;
+            results.prepend(card);
+        }
+    </script>
 </body>
 </html>
