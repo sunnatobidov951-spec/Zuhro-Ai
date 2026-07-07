@@ -5,62 +5,40 @@
     <title>Zuhro.ai | Global AI Engine</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #0f172a; color: #e2e8f0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; border: 1px solid #334155; }
+        .container { max-width: 900px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; border: 1px solid #334155; }
         .header { text-align: center; border-bottom: 2px solid #38bdf8; padding-bottom: 10px; margin-bottom: 20px; }
         h1 { color: #38bdf8; margin: 0; }
-        .grid-core { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .core-item { background: #0f172a; padding: 10px; border-radius: 5px; text-align: center; font-size: 0.8em; border: 1px solid #38bdf8; }
-        .input-field { width: 100%; padding: 12px; margin: 10px 0; background: #334155; border: 1px solid #475569; color: white; border-radius: 5px; box-sizing: border-box; }
-        .btn-start { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: #0f172a; }
-        .output-box { margin-top: 20px; padding: 15px; background: #0f172a; border-radius: 5px; min-height: 100px; border: 1px dashed #38bdf8; color: #e2e8f0; }
+        
+        /* Сетка товаров */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .product-card { background: #0f172a; padding: 15px; border-radius: 10px; border: 1px solid #38bdf8; text-align: center; }
+        .product-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
+        .btn-analyze { background: #38bdf8; border: none; padding: 10px; width: 100%; color: #0f172a; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Zuhro.ai</h1>
-            <p>Центр обработки товаров</p>
-        </div>
-        
-        <div class="grid-core">
-            <div class="core-item">Google Search</div>
-            <div class="core-item">Gemini</div>
-            <div class="core-item">ChatGPT</div>
-            <div class="core-item">Claude</div>
-            <div class="core-item">Grok</div>
+            <p>Центр обработки товаров: Тренды одежды</p>
         </div>
 
-        <input type="text" id="productName" class="input-field" placeholder="Название товара...">
-        <input type="number" id="productPrice" class="input-field" placeholder="Цена закупки ($)...">
-        <button class="btn-start" onclick="runAI()">ЗАПУСТИТЬ AI-АНАЛИЗ</button>
-
-        <div class="output-box" id="result">
-            <p style="text-align:center; color:#64748b;">Ожидание команды...</p>
+        <div class="product-grid">
+            <!-- Карточка товара 1 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=400" alt="Спортивная одежда">
+                <h3>Худи «Pro-Fit»</h3>
+                <p>Цена: $12.50</p>
+                <button class="btn-analyze" onclick="alert('Анализ худи запущен...')">Анализировать</button>
+            </div>
+            <!-- Карточка товара 2 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400" alt="Одежда">
+                <h3>Кроссовки «Runner»</h3>
+                <p>Цена: $22.00</p>
+                <button class="btn-analyze" onclick="alert('Анализ кроссовок запущен...')">Анализировать</button>
+            </div>
         </div>
     </div>
-
-    <script>
-        function runAI() {
-            const name = document.getElementById('productName').value;
-            const price = document.getElementById('productPrice').value;
-            const resultBox = document.getElementById('result');
-
-            if (!name || !price) {
-                alert("Брат, заполни все поля!");
-                return;
-            }
-
-            resultBox.innerHTML = "<strong>Анализ запущен...</strong><br>Google Search ищет цены...<br>Gemini анализирует тренды...<br>ChatGPT пишет описание...";
-
-            setTimeout(() => {
-                resultBox.innerHTML = `
-                    <h3>Результат для: ${name}</h3>
-                    <p><strong>Рекомендуемая цена продажи:</strong> $${(price * 2.5).toFixed(2)}</p>
-                    <p><strong>Вердикт ИИ:</strong> Высокий потенциал продаж. Товар популярен в категории «Топ-тренды».</p>
-                    <p><strong>Описание для сайта:</strong> Стильный и качественный товар «${name}», который станет незаменимым в каждом доме. Успейте заказать, пока товар в наличии!</p>
-                `;
-            }, 2000);
-        }
-    </script>
 </body>
 </html>
