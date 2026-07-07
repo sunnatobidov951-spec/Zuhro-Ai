@@ -2,35 +2,41 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Zuhro.ai | Глобальная торговая экосистема</title>
+    <title>Zuhro.ai | Global AI Engine</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f4f7f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 500px;
-        }
-        h1 { color: #2c3e50; }
-        p { color: #7f8c8d; line-height: 1.6; }
-        .status { color: #27ae60; font-weight: bold; margin-top: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0f172a; color: #e2e8f0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; border: 1px solid #334155; }
+        .header { text-align: center; border-bottom: 2px solid #38bdf8; padding-bottom: 10px; margin-bottom: 20px; }
+        h1 { color: #38bdf8; margin: 0; }
+        .grid-core { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .core-item { background: #0f172a; padding: 10px; border-radius: 5px; text-align: center; font-size: 0.8em; border: 1px solid #38bdf8; }
+        .input-field { width: 100%; padding: 12px; margin: 10px 0; background: #334155; border: 1px solid #475569; color: white; border-radius: 5px; box-sizing: border-box; }
+        .btn-start { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: #0f172a; }
+        .output-box { margin-top: 20px; padding: 15px; background: #0f172a; border-radius: 5px; min-height: 100px; border: 1px dashed #475569; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Zuhro.ai</h1>
-        <p>Глобальная экосистема автоматизированной торговли нового поколения.</p>
-        <p class="status">AI-ядро активировано и готово к работе.</p>
+        <div class="header">
+            <h1>Zuhro.ai</h1>
+            <p>Центр обработки товаров</p>
+        </div>
+        
+        <div class="grid-core">
+            <div class="core-item">Google Search</div>
+            <div class="core-item">Gemini</div>
+            <div class="core-item">ChatGPT</div>
+            <div class="core-item">Claude</div>
+            <div class="core-item">Grok</div>
+        </div>
+
+        <input type="text" class="input-field" placeholder="Название товара...">
+        <input type="number" class="input-field" placeholder="Цена закупки ($)...">
+        <button class="btn-start">ЗАПУСТИТЬ AI-АНАЛИЗ И СТАРТ ПРОДАЖ</button>
+
+        <div class="output-box" id="result">
+            <p style="text-align:center; color:#64748b;">Ожидание данных для обработки...</p>
+        </div>
     </div>
 </body>
 </html>
