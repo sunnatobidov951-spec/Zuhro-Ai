@@ -1,41 +1,128 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Zuhro.ai | Global AI Engine</title>
-    <style>
-        body { font-family: sans-serif; background-color: #0f172a; color: white; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #38bdf8; background: #1e293b; color: white; }
-        button { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        #results { margin-top: 20px; }
-        .card { background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #38bdf8; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Zuhro.ai</h1>
-        <input type="text" id="urlInput" placeholder="Вставь ссылку на товар...">
-        <button onclick="analyzeProduct()">Анализировать товар</button>
-        <div id="results"></div>
-    </div>
+const ALLOWED_DOMAINS = [
+  "aliexpress.com",
+  "aliexpress.ru",
+  "amazon.com",
+  "1688.com",
+  "alibaba.com",
+  "taobao.com",
+  "ozon.ru",
+  "wildberries.ru",
+  "temu.com",
+  "ebay.com",
+];
 
-    <script>
-        function analyzeProduct() {
-            const url = document.getElementById('urlInput').value;
-            const results = document.getElementById('results');
-            if (!url) return;
+const MAX_PAGE_SIZE = 2 * 1024 * 1024;
 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <h3>Товар проанализирован</h3>
-                <p>Источник: ${url.substring(0, 30)}...</p>
-                <p>✅ Анализ завершен: <strong>Товар ликвидный</strong></p>
-                <p>💰 Рекомендованная цена: $45.00</p>
-            `;
-            results.prepend(card);
+function isAllowedUrl(rawUrl) {
+  let parsed;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return false;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return false;
+  const hostname = parsed.hostname.toLowerCase();
+  return ALLOWED_DOMAINS.some(
+    (domain) => hostname === domain || hostname.endsWith("." + domain)
+  );
+}
+
+export default {
+  async fetch(request, env) {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    if (request.method !== "POST") {
+      return new Response(JSON.stringify({ error: "Только POST запросы" }), {
+        status: 405,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    try {
+      const body = await request.json().catch(() => null);
+      const url = body?.url?.trim();
+
+      if (!url) {
+        return new Response(JSON.stringify({ error: "Пришли ссылку на товар" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+
+      if (!isAllowedUrl(url)) {
+        return new Response(
+          JSON.stringify({
+            error: "Эта ссылка не поддерживается.",
+          }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      let pageHtml = "";
+      try {
+        const pageRes = await fetch(url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+          },
+        });
+        const reader = pageRes.body.getReader();
+        const decoder = new TextDecoder();
+        let received = 0;
+        let chunks = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          received += value.length;
+          if (received > MAX_PAGE_SIZE) { reader.cancel(); break; }
+          chunks += decoder.decode(value, { stream: true });
         }
-    </script>
-</body>
-</html>
+        pageHtml = chunks;
+      } catch (fetchErr) {
+        return new Response(JSON.stringify({ error: "Ошибка сети" }), { status: 400 });
+      }
+
+      const extractMeta = (prop) => {
+        const regex = new RegExp(`<meta[^>]+(?:property|name)=["']${prop}["'][^>]+content=["']([^"']+)["']`, "i");
+        const match = pageHtml.match(regex);
+        return match ? match[1] : null;
+      };
+
+      const title = extractMeta("og:title") || "Товар";
+      const description = extractMeta("og:description") || "Нет описания";
+
+      const aiResponse = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-3-5-sonnet-20240620",
+          max_tokens: 600,
+          system: "Ты эксперт по e-commerce. Отвечай строго в формате JSON.",
+          messages: [{ role: "user", content: `Проанализируй товар: ${title}, ${description}` }],
+        }),
+      });
+
+      const aiData = await aiResponse.json();
+      const rawText = aiData.content?.[0]?.text || "{}";
+
+      return new Response(
+        JSON.stringify({ title, analysis: JSON.parse(rawText.replace(/```json|```/g, "").trim()) }),
+        { headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    } catch (err) {
+      return new Response(JSON.stringify({ error: "Ошибка сервера" }), { status: 500 });
+    }
+  },
+};
+
