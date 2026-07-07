@@ -9,7 +9,9 @@
         .main-content { flex: 1; padding: 40px; }
         .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h1 { color: #1a1a2e; }
-        .btn-add { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f8f9fa; }
     </style>
 </head>
 <body>
@@ -21,9 +23,19 @@
     </div>
     <div class="main-content">
         <div class="card">
-            <h1>Добро пожаловать в личный кабинет!</h1>
-            <p>Здесь вы сможете управлять своими продажами и автоматизировать работу с поставщиками.</p>
-            <button class="btn-add">+ Добавить товар</button>
+            <h1>Мои товары</h1>
+            <table>
+                <tr>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                </tr>
+                <tr>
+                    <td>Товар №1</td>
+                    <td>100$</td>
+                    <td>В наличии</td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>
