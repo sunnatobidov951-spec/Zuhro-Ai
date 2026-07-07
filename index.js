@@ -1,4 +1,3 @@
-
 const ALLOWED_DOMAINS = [
   "aliexpress.com", "aliexpress.ru", "amazon.com", "1688.com",
   "alibaba.com", "taobao.com", "ozon.ru", "wildberries.ru", "temu.com", "ebay.com"
@@ -22,6 +21,7 @@ export default {
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     };
+
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
     if (request.method !== "POST") return new Response(JSON.stringify({ error: "Only POST" }), { status: 405, headers: corsHeaders });
 
@@ -33,15 +33,22 @@ export default {
       const pageRes = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
       const pageHtml = await pageRes.text();
       
+      // Ограничиваем объем данных, чтобы ИИ не выдал ошибку из-за слишком длинного текста
+      const truncatedHtml = pageHtml.substring(0, 80000);
+
       const aiResponse = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01"
+        },
         body: JSON.stringify({
           model: "claude-3-5-sonnet-20240620",
           max_tokens: 600,
           system: "You are an e-commerce expert. Respond ONLY with valid JSON.",
-          messages: [{ role: "user", content: "Analyze this: " + url }]
-        }),
+          messages: [{ role: "user", content: "Analyze this product page data: " + truncatedHtml }]
+        })
       });
 
       const aiData = await aiResponse.json();
