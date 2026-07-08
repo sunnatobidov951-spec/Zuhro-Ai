@@ -18,43 +18,47 @@
 </head>
 <body>
     <div class="stats">
-        <div class="stat-box">Всего товаров: <span id="count">0</span></div>
+        <div class="stat-box">Товаров: <span id="count">0</span></div>
+        <div class="stat-box">Сумма: <span id="total-price">0</span> $</div>
     </div>
     <div class="card">
         <h2>Добавление товара</h2>
         <input type="text" id="name" placeholder="Название товара">
+        <input type="number" id="price" placeholder="Цена ($)">
         <textarea id="desc" placeholder="Описание товара..."></textarea>
         <button class="ai-btn" onclick="generateAI()">✨ Помощь AI</button>
         <button onclick="add()">Добавить</button>
     </div>
     <div class="card">
         <table id="table">
-            <thead><tr><th>Товар</th><th>Описание</th><th>Действие</th></tr></thead>
+            <thead><tr><th>Товар</th><th>Цена</th><th>Описание</th><th>Действие</th></tr></thead>
             <tbody id="list"></tbody>
         </table>
     </div>
     <script>
-        let total = 0;
-        function updateCount(delta) {
-            total += delta;
-            document.getElementById('count').innerText = total;
+        let count = 0;
+        let sum = 0;
+        function add() {
+            const n = document.getElementById('name'), p = document.getElementById('price'), d = document.getElementById('desc'), l = document.getElementById('list');
+            if(!n.value || !p.value || !d.value) return alert('Заполните все поля!');
+            const price = parseFloat(p.value);
+            count++; sum += price;
+            document.getElementById('count').innerText = count;
+            document.getElementById('total-price').innerText = sum;
+            const row = l.insertRow();
+            row.innerHTML = `<td>${n.value}</td><td>${price} $</td><td>${d.value}</td><td><button onclick="removeRow(this, ${price})">Удалить</button></td>`;
+            n.value = ''; p.value = ''; d.value = '';
+        }
+        function removeRow(btn, price) {
+            btn.parentElement.parentElement.remove();
+            count--; sum -= price;
+            document.getElementById('count').innerText = count;
+            document.getElementById('total-price').innerText = sum;
         }
         function generateAI() {
             const name = document.getElementById('name').value;
             if(!name) return alert('Введите название!');
             document.getElementById('desc').value = `Профессиональный товар: ${name}. Высокое качество, проверено системой Zuhro.ai. Рекомендуем к покупке!`;
-        }
-        function add() {
-            const n = document.getElementById('name'), d = document.getElementById('desc'), l = document.getElementById('list');
-            if(!n.value || !d.value) return alert('Заполните все поля!');
-            const row = l.insertRow();
-            row.innerHTML = `<td>${n.value}</td><td>${d.value}</td><td><button onclick="removeRow(this)">Удалить</button></td>`;
-            n.value = ''; d.value = '';
-            updateCount(1);
-        }
-        function removeRow(btn) {
-            btn.parentElement.parentElement.remove();
-            updateCount(-1);
         }
     </script>
 </body>
