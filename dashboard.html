@@ -7,44 +7,58 @@
         :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 20px; }
         .card { background: var(--card); padding: 25px; border-radius: 12px; margin-bottom: 20px; }
+        input, textarea { width: 100%; margin: 5px 0; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; }
+        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .ai-btn { background: #8b5cf6; }
         .cart-section { border: 2px solid var(--accent); padding: 20px; border-radius: 12px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>Витрина Zuhro.ai (Мощный Маркетплейс)</h2>
+        <h2>Витрина Zuhro.ai</h2>
         <input type="text" id="name" placeholder="Название товара">
         <input type="number" id="price" placeholder="Цена ($)">
+        <textarea id="desc" placeholder="Описание товара..."></textarea>
+        <button class="ai-btn" onclick="generateAI()">✨ Помощь AI</button>
         <button onclick="addToCatalog()">Добавить на витрину</button>
     </div>
 
     <div class="card">
         <h3>Товары в продаже</h3>
-        <table id="catalog">
-            <thead><tr><th>Товар</th><th>Цена</th><th>Действие</th></tr></thead>
+        <table id="catalog" style="width:100%">
+            <thead><tr><th>Товар</th><th>Цена</th><th>Описание</th><th>Действие</th></tr></thead>
             <tbody id="catalog-list"></tbody>
         </table>
     </div>
 
     <div class="card cart-section">
-        <h3>🛒 Корзина (Покупательский опыт)</h3>
+        <h3>🛒 Корзина</h3>
         <div id="cart-items">Корзина пуста</div>
         <p>Итого к оплате: <span id="cart-total">0</span> $</p>
     </div>
 
     <script>
         let cartTotal = 0;
+        function generateAI() {
+            const name = document.getElementById('name').value;
+            if(!name) return alert('Введите название!');
+            document.getElementById('desc').value = `Премиальный товар: ${name}. Эксклюзивное качество и надежность от Zuhro.ai. Выбор профессионалов!`;
+        }
         function addToCatalog() {
             const n = document.getElementById('name').value;
             const p = document.getElementById('price').value;
+            const d = document.getElementById('desc').value;
+            if(!n || !p) return alert('Заполните название и цену!');
             const list = document.getElementById('catalog-list');
             const row = list.insertRow();
-            row.innerHTML = `<td>${n}</td><td>${p} $</td><td><button onclick="addToCart(${p}, '${n}')">Добавить в корзину</button></td>`;
+            row.innerHTML = `<td>${n}</td><td>${p} $</td><td>${d}</td><td><button onclick="addToCart(${p}, '${n}')">В корзину</button></td>`;
         }
         function addToCart(price, name) {
             cartTotal += parseFloat(price);
             document.getElementById('cart-total').innerText = cartTotal;
-            document.getElementById('cart-items').innerHTML += `<div>${name} - ${price} $</div>`;
+            const items = document.getElementById('cart-items');
+            if(items.innerText === 'Корзина пуста') items.innerHTML = '';
+            items.innerHTML += `<div>${name} - ${price} $</div>`;
         }
     </script>
 </body>
