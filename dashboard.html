@@ -2,44 +2,44 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zuhro.ai | Dashboard</title>
+    <title>Zuhro.ai | AI Dashboard</title>
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #22c55e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; }
-        .side { width: 240px; background: #000; padding: 20px; border-right: 1px solid #334155; }
-        .main { flex: 1; padding: 40px; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        input { background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; border-radius: 6px; margin-right: 10px; }
-        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-        th { text-align: left; color: var(--accent); padding: 12px; border-bottom: 2px solid #334155; }
-        td { padding: 12px; border-bottom: 1px solid #334155; }
-        .del-btn { background: #ef4444; padding: 5px 10px; font-size: 12px; cursor: pointer; color: white; border: none; border-radius: 4px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 20px; }
+        .card { background: var(--card); padding: 25px; border-radius: 12px; }
+        input, textarea { width: 100%; margin-bottom: 10px; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
+        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .ai-btn { background: #8b5cf6; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
     </style>
 </head>
 <body>
-    <div class="side"><h2>Zuhro.ai</h2><p>Dashboard</p><p>Products</p></div>
-    <div class="main">
-        <div class="card">
-            <h2>Добавить товар</h2>
-            <input type="text" id="name" placeholder="Название">
-            <input type="number" id="price" placeholder="Цена $">
-            <button onclick="add()">Добавить</button>
-            <table id="table">
-                <thead><tr><th>Товар</th><th>Цена</th><th>Действие</th></tr></thead>
-                <tbody id="list"></tbody>
-            </table>
-        </div>
+    <div class="card">
+        <h2>Добавить товар с AI</h2>
+        <input type="text" id="name" placeholder="Название товара">
+        <textarea id="desc" placeholder="Описание товара..."></textarea>
+        <button onclick="generateAI()">✨ Помощь AI</button>
+        <button onclick="add()">Добавить</button>
+        <table id="table">
+            <thead><tr><th>Товар</th><th>Описание</th><th>Действие</th></tr></thead>
+            <tbody id="list"></tbody>
+        </table>
     </div>
     <script>
+        function generateAI() {
+            const name = document.getElementById('name').value;
+            if(!name) return alert('Введите название для генерации!');
+            document.getElementById('desc').value = `Умное описание для ${name}: высококачественный товар, проверен нейросетью Zuhro.ai. Идеально подходит для вашего стиля!`;
+        }
         function add() {
-            const n = document.getElementById('name'), p = document.getElementById('price'), l = document.getElementById('list');
-            if(!n.value || !p.value) return alert('Заполните поля!');
+            const n = document.getElementById('name'), d = document.getElementById('desc'), l = document.getElementById('list');
+            if(!n.value || !d.value) return alert('Заполните все поля!');
             const row = l.insertRow();
-            row.innerHTML = `<td>${n.value}</td><td>${p.value} $</td><td><button class="del-btn" onclick="this.parentElement.parentElement.remove()">Удалить</button></td>`;
-            n.value = ''; p.value = '';
+            row.innerHTML = `<td>${n.value}</td><td>${d.value}</td><td><button onclick="this.parentElement.parentElement.remove()">Удалить</button></td>`;
+            n.value = ''; d.value = '';
         }
     </script>
 </body>
 </html>
+
