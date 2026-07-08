@@ -2,23 +2,33 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Вход в Zuhro.ai</title>
+    <title>Zuhro.ai | Магазин</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 300px; }
-        h2 { text-align: center; color: #333; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn { display: block; width: 100%; padding: 10px; background-color: #0056b3; color: white; text-align: center; border-radius: 4px; text-decoration: none; cursor: pointer; margin-top: 10px; }
-        .toggle-text { text-align: center; margin-top: 15px; font-size: 14px; color: #666; }
+        body { font-family: sans-serif; background: #0f172a; color: white; padding: 20px; }
+        .product-card { background: #1e293b; padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid #334155; }
+        h1 { text-align: center; color: #22c55e; }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h2>Вход в Zuhro.ai</h2>
-        <input type="email" placeholder="Ваш Email">
-        <input type="password" placeholder="Пароль">
-        <a href="dashboard.html" class="btn">Войти</a>
-        <div class="toggle-text">Нет аккаунта? Зарегистрироваться</div>
-    </div>
+
+<h1>Zuhro.ai | Витрина</h1>
+<div id="product-display">
+    <p style="text-align:center;">Ожидание товара от робота...</p>
+</div>
+
+<script>
+    // Робот проверяет, есть ли новый товар
+    const data = localStorage.getItem('zuhro_product');
+    if (data) {
+        const product = JSON.parse(data);
+        document.getElementById('product-display').innerHTML = `
+            <div class="product-card">
+                <h3>${product.name}</h3>
+                <p style="white-space: pre-line;">${product.description}</p>
+                <button style="width:100%; padding:10px; background:#22c55e; border:none; color:white; border-radius:5px;">Купить сейчас</button>
+            </div>
+        `;
+    }
+</script>
 </body>
 </html>
