@@ -1,0 +1,32 @@
+server:
+  port: "8080"
+  env: "production"
+  shutdown_timeout: "15s"
+  read_timeout: "10s"
+  write_timeout: "30s"
+
+database:
+  url: "postgres://user:password@localhost:5432/zuhro_db"
+  max_conns: 50
+  min_conns: 10
+  max_idle_time: "30m"
+  conn_max_lifetime: "1h"
+
+redis:
+  url: "localhost:6379"
+  password: ""
+  db: 0
+  pool_size: 100
+
+jwt:
+  secret: "super-secret-key-that-is-at-least-32-chars-long"
+  access_ttl: "15m"
+  refresh_ttl: "168h"
+
+ratelimit:
+  requests_per_second: 10
+  burst: 20
+
+observability:
+  trace_endpoint: "http://localhost:4317"
+  metric_port: "9090"
