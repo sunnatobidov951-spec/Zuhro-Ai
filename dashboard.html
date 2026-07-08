@@ -2,79 +2,23 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Zuhro.ai | Professional Marketplace</title>
+    <title>Zuhro.ai | Core System</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #22c55e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 20px; }
-        .card { background: var(--card); padding: 25px; border-radius: 16px; margin-bottom: 25px; }
-        h2 { color: var(--accent); }
-        input, textarea { width: 100%; margin: 10px 0; padding: 12px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; box-sizing: border-box; }
-        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; color: white; font-weight: bold; }
-        .del-btn { background: #ef4444; margin-left: 10px; }
-        #catalog-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .product-card { background: #334155; padding: 20px; border-radius: 12px; }
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
+        .container { width: 90%; max-width: 500px; text-align: center; }
+        .loader { color: #22c55e; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Zuhro.ai | Панель управления</h2>
-    <input type="text" id="name" placeholder="Название товара">
-    <input type="number" id="price" placeholder="Цена ($)">
-    <textarea id="desc" placeholder="Описание..."></textarea>
-    <button onclick="requestAI()">✨ Помощь AI</button>
-    <button onclick="addToCatalog()">Добавить на витрину</button>
-</div>
-
-<div class="card">
-    <h3>Витрина</h3>
-    <div id="catalog-list"></div>
-</div>
-
-<div class="card">
-    <h3>🛒 Корзина</h3>
-    <div id="cart-items"></div>
-    <p><strong>Итого: <span id="cart-total">0</span> $</strong></p>
+<div class="container">
+    <h1>Zuhro.ai</h1>
+    <p>Система инициализирована.</p>
+    <div id="status" class="loader">Готовность: 100%</div>
 </div>
 
 <script>
-    let cartTotal = 0;
-
-    async function requestAI() {
-        const name = document.getElementById('name').value;
-        if(!name) return alert('Введите название!');
-        document.getElementById('desc').value = "Анализ...";
-        setTimeout(() => {
-            document.getElementById('desc').value = `Премиум товар: ${name}. Эксклюзив от Zuhro.ai.`;
-        }, 1000);
-    }
-
-    function addToCatalog() {
-        const n = document.getElementById('name').value;
-        const p = document.getElementById('price').value;
-        const d = document.getElementById('desc').value;
-        if(!n || !p) return;
-        
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `<h4>${n}</h4><p>${d}</p><p><b>${p} $</b></p>
-                          <button onclick="addToCart(${p}, '${n}')">Купить</button>`;
-        document.getElementById('catalog-list').appendChild(card);
-    }
-
-    function addToCart(price, name) {
-        cartTotal += parseFloat(price);
-        document.getElementById('cart-total').innerText = cartTotal;
-        const div = document.createElement('div');
-        div.innerHTML = `✅ ${name} - ${price} $ <button class="del-btn" onclick="removeFromCart(this, ${price})">Удалить</button>`;
-        document.getElementById('cart-items').appendChild(div);
-    }
-
-    function removeFromCart(btn, price) {
-        cartTotal -= price;
-        document.getElementById('cart-total').innerText = cartTotal;
-        btn.parentElement.remove();
-    }
+    console.log("Zuhro.ai Core Initialized.");
 </script>
 
 </body>
