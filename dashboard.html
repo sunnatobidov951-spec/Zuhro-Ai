@@ -2,68 +2,41 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Zuhro.ai | Full Integration</title>
+    <title>Zuhro.ai | Autonomous Engine</title>
     <style>
-        :root { --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; --accent: #22c55e; --danger: #ef4444; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .module { background: var(--panel); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { background: var(--accent); border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
-        .btn-ai { background: #3b82f6; }
-        .btn-del { background: var(--danger); padding: 5px 10px; font-size: 12px; }
-        .item-card { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        :root { --bg: #0f172a; --accent: #22c55e; --danger: #ef4444; }
+        body { background: var(--bg); color: #f8fafc; font-family: sans-serif; padding: 20px; }
+        .module { background: #1e293b; padding: 20px; border-radius: 12px; }
+        button { background: var(--accent); border: none; padding: 10px; color: white; cursor: pointer; border-radius: 6px; margin-top: 10px; }
+        .auto-btn { background: #8b5cf6; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Zuhro.ai</h1>
-    
-    <div class="module">
-        <h3>Добавление товара</h3>
-        <input type="text" id="name" placeholder="Название">
-        <input type="number" id="price" placeholder="Цена">
-        <textarea id="desc" placeholder="Описание"></textarea>
-        <button class="btn-ai" onclick="analyzeAI()">✨ Анализ AI</button>
-        <button onclick="addItem()">Добавить на витрину</button>
-    </div>
-
-    <h3>Витрина</h3>
-    <div id="display-area"></div>
-
-    <h3>🛒 Корзина (Итого: <span id="total">0</span> $)</h3>
-    <div id="cart-area"></div>
+<div class="module">
+    <h2>Zuhro.ai | Автономный режим</h2>
+    <input type="text" id="name" placeholder="Название товара">
+    <input type="number" id="price" placeholder="Твоя цена ($)">
+    <input type="number" id="market-price" placeholder="Цена рынка ($)">
+    <br>
+    <button class="auto-btn" onclick="runRobot()">🤖 Запустить Авто-Робота</button>
 </div>
 
+<div id="result" style="margin-top: 20px;"></div>
+
 <script>
-    let total = 0;
-    
-    function analyzeAI() {
+    function runRobot() {
         const name = document.getElementById('name').value;
-        if(!name) return alert("Введите название для анализа!");
-        document.getElementById('desc').value = `Анализирую: ${name}... Это будет эксклюзивный товар с лучшим описанием от Zuhro.ai.`;
-    }
+        const price = parseFloat(document.getElementById('price').value);
+        const mPrice = parseFloat(document.getElementById('market-price').value);
+        const res = document.getElementById('result');
 
-    function addItem() {
-        const name = document.getElementById('name').value;
-        const price = parseFloat(document.getElementById('price').value) || 0;
-        const desc = document.getElementById('desc').value;
-        if(!name) return alert("Введите название!");
-        
-        const area = document.getElementById('display-area');
-        area.innerHTML += `<div class="item-card"><h4>${name}</h4><p>${desc}</p><p>Цена: ${price} $</p>
-                          <button onclick="addToCart('${name}', ${price})">Купить</button></div>`;
-    }
-
-    function addToCart(name, price) {
-        total += price;
-        document.getElementById('total').innerText = total;
-        const cart = document.getElementById('cart-area');
-        cart.innerHTML += `<div class="item-card">✅ ${name} - ${price} $ 
-                          <button class="btn-del" onclick="this.parentElement.remove()">Удалить</button></div>`;
+        if (price > mPrice) {
+            res.innerHTML = `<p style="color:red;">⚠️ Робот: Твоя цена ${price}$ выше рыночной (${mPrice}$). Удаляю товар из витрины...</p>`;
+        } else {
+            res.innerHTML = `<p style="color:green;">✅ Робот: Цена ${price}$ отличная. Оптимизирую описание и публикую!</p>`;
+        }
     }
 </script>
-
 </body>
 </html>
