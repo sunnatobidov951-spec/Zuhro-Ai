@@ -7,10 +7,12 @@
         :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 20px; }
         .card { background: var(--card); padding: 25px; border-radius: 12px; margin-bottom: 20px; }
-        input, textarea { width: 100%; margin: 5px 0; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; }
-        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        input, textarea { width: 100%; margin: 5px 0; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
+        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 5px; }
         .ai-btn { background: #8b5cf6; }
         .cart-section { border: 2px solid var(--accent); padding: 20px; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
     </style>
 </head>
 <body>
@@ -25,7 +27,7 @@
 
     <div class="card">
         <h3>Товары в продаже</h3>
-        <table id="catalog" style="width:100%">
+        <table id="catalog">
             <thead><tr><th>Товар</th><th>Цена</th><th>Описание</th><th>Действие</th></tr></thead>
             <tbody id="catalog-list"></tbody>
         </table>
@@ -41,8 +43,13 @@
         let cartTotal = 0;
         function generateAI() {
             const name = document.getElementById('name').value;
-            if(!name) return alert('Введите название!');
-            document.getElementById('desc').value = `Премиальный товар: ${name}. Эксклюзивное качество и надежность от Zuhro.ai. Выбор профессионалов!`;
+            if(!name) return alert('Введите название товара!');
+            const templates = [
+                `🚀 Хит продаж: ${name}! Идеальное соотношение цены и качества. Must-have в 2026 году.`,
+                `💎 Премиум выбор: ${name}. Надежность, стиль и инновации в одном флаконе.`,
+                `🔥 Супер-предложение на ${name}! Ограниченная партия, успейте заказать по выгодной цене.`
+            ];
+            document.getElementById('desc').value = templates[Math.floor(Math.random() * templates.length)];
         }
         function addToCatalog() {
             const n = document.getElementById('name').value;
@@ -52,13 +59,16 @@
             const list = document.getElementById('catalog-list');
             const row = list.insertRow();
             row.innerHTML = `<td>${n}</td><td>${p} $</td><td>${d}</td><td><button onclick="addToCart(${p}, '${n}')">В корзину</button></td>`;
+            document.getElementById('name').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('desc').value = '';
         }
         function addToCart(price, name) {
             cartTotal += parseFloat(price);
             document.getElementById('cart-total').innerText = cartTotal;
             const items = document.getElementById('cart-items');
             if(items.innerText === 'Корзина пуста') items.innerHTML = '';
-            items.innerHTML += `<div>${name} - ${price} $</div>`;
+            items.innerHTML += `<div>✅ ${name} - ${price} $</div>`;
         }
     </script>
 </body>
