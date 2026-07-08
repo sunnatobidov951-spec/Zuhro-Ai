@@ -3,38 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zuhro.ai | Магазин</title>
+    <title>Zuhro.ai | Витрина</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 15px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 20px; }
         h1 { text-align: center; color: #22c55e; margin-bottom: 20px; }
         #product-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
-        .product-card { background: white; border-radius: 16px; padding: 15px; width: 100%; max-width: 320px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; }
+        .product-card { background: white; border-radius: 16px; padding: 15px; width: 100%; max-width: 320px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .product-card h3 { margin: 0 0 10px 0; color: #1e293b; }
         .product-card p { color: #64748b; font-size: 0.9em; white-space: pre-line; }
-        .btn-buy { width: 100%; padding: 12px; background: #22c55e; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-buy { width: 100%; padding: 12px; background: #22c55e; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-buy:hover { background: #16a34a; }
+        .no-data { text-align: center; color: #94a3b8; margin-top: 50px; }
     </style>
 </head>
 <body>
 
-<h1>Zuhro.ai | Витрина</h1>
-<div id="product-display">
-    <p>Ожидание товара от робота...</p>
-</div>
+    <h1>Zuhro.ai | Витрина</h1>
+    <div id="product-display">
+        <p class="no-data">Загрузка данных товара...</p>
+    </div>
 
-<script>
-    const data = localStorage.getItem('zuhro_product');
-    if (data) {
-        const product = JSON.parse(data);
-        document.getElementById('product-display').innerHTML = `
-            <div class="product-card">
-                <h3>${product.name}</h3>
-                <p>${product.description}</p>
-                <button class="btn-buy">Купить сейчас</button>
-            </div>
-        `;
-    }
-</script>
+    <script>
+        const data = localStorage.getItem('zuhro_product');
+        const display = document.getElementById('product-display');
+
+        if (data) {
+            try {
+                const product = JSON.parse(data);
+                display.innerHTML = `
+                    <div class="product-card">
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <button class="btn-buy">Купить сейчас</button>
+                    </div>
+                `;
+            } catch (e) {
+                display.innerHTML = '<p class="no-data">Ошибка при чтении данных товара.</p>';
+            }
+        } else {
+            display.innerHTML = '<p class="no-data">Товар еще не добавлен. Пожалуйста, воспользуйтесь dashboard для добавления товара.</p>';
+        }
+    </script>
 </body>
 </html>
 
