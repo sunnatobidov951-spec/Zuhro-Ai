@@ -2,64 +2,51 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Zuhro.ai | Professional Dashboard</title>
+    <title>Zuhro.ai | Global Marketplace</title>
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 20px; }
         .card { background: var(--card); padding: 25px; border-radius: 12px; margin-bottom: 20px; }
-        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
-        .stat-box { background: #334155; padding: 15px; border-radius: 8px; flex: 1; text-align: center; }
-        input, textarea { width: 100%; margin-bottom: 10px; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
-        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .ai-btn { background: #8b5cf6; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
+        .cart-section { border: 2px solid var(--accent); padding: 20px; border-radius: 12px; }
     </style>
 </head>
 <body>
-    <div class="stats">
-        <div class="stat-box">Товаров: <span id="count">0</span></div>
-        <div class="stat-box">Сумма: <span id="total-price">0</span> $</div>
-    </div>
     <div class="card">
-        <h2>Добавление товара</h2>
+        <h2>Витрина Zuhro.ai (Мощный Маркетплейс)</h2>
         <input type="text" id="name" placeholder="Название товара">
         <input type="number" id="price" placeholder="Цена ($)">
-        <textarea id="desc" placeholder="Описание товара..."></textarea>
-        <button class="ai-btn" onclick="generateAI()">✨ Помощь AI</button>
-        <button onclick="add()">Добавить</button>
+        <button onclick="addToCatalog()">Добавить на витрину</button>
     </div>
+
     <div class="card">
-        <table id="table">
-            <thead><tr><th>Товар</th><th>Цена</th><th>Описание</th><th>Действие</th></tr></thead>
-            <tbody id="list"></tbody>
+        <h3>Товары в продаже</h3>
+        <table id="catalog">
+            <thead><tr><th>Товар</th><th>Цена</th><th>Действие</th></tr></thead>
+            <tbody id="catalog-list"></tbody>
         </table>
     </div>
+
+    <div class="card cart-section">
+        <h3>🛒 Корзина (Покупательский опыт)</h3>
+        <div id="cart-items">Корзина пуста</div>
+        <p>Итого к оплате: <span id="cart-total">0</span> $</p>
+    </div>
+
     <script>
-        let count = 0;
-        let sum = 0;
-        function add() {
-            const n = document.getElementById('name'), p = document.getElementById('price'), d = document.getElementById('desc'), l = document.getElementById('list');
-            if(!n.value || !p.value || !d.value) return alert('Заполните все поля!');
-            const price = parseFloat(p.value);
-            count++; sum += price;
-            document.getElementById('count').innerText = count;
-            document.getElementById('total-price').innerText = sum;
-            const row = l.insertRow();
-            row.innerHTML = `<td>${n.value}</td><td>${price} $</td><td>${d.value}</td><td><button onclick="removeRow(this, ${price})">Удалить</button></td>`;
-            n.value = ''; p.value = ''; d.value = '';
+        let cartTotal = 0;
+        function addToCatalog() {
+            const n = document.getElementById('name').value;
+            const p = document.getElementById('price').value;
+            const list = document.getElementById('catalog-list');
+            const row = list.insertRow();
+            row.innerHTML = `<td>${n}</td><td>${p} $</td><td><button onclick="addToCart(${p}, '${n}')">Добавить в корзину</button></td>`;
         }
-        function removeRow(btn, price) {
-            btn.parentElement.parentElement.remove();
-            count--; sum -= price;
-            document.getElementById('count').innerText = count;
-            document.getElementById('total-price').innerText = sum;
-        }
-        function generateAI() {
-            const name = document.getElementById('name').value;
-            if(!name) return alert('Введите название!');
-            document.getElementById('desc').value = `Профессиональный товар: ${name}. Высокое качество, проверено системой Zuhro.ai. Рекомендуем к покупке!`;
+        function addToCart(price, name) {
+            cartTotal += parseFloat(price);
+            document.getElementById('cart-total').innerText = cartTotal;
+            document.getElementById('cart-items').innerHTML += `<div>${name} - ${price} $</div>`;
         }
     </script>
 </body>
 </html>
+
