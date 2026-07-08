@@ -2,38 +2,44 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Панель Zuhro.ai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zuhro.ai | Dashboard</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; }
-        .sidebar { width: 250px; height: 100vh; background-color: #1a1a2e; color: white; padding: 20px; }
-        .main-content { flex: 1; padding: 40px; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 20px; }
-        input { padding: 10px; width: 200px; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f8f9fa; }
+        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #22c55e; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; }
+        .side { width: 240px; background: #000; padding: 20px; border-right: 1px solid #334155; }
+        .main { flex: 1; padding: 40px; }
+        .card { background: var(--card); padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        input { background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; border-radius: 6px; margin-right: 10px; }
+        button { background: var(--accent); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th { text-align: left; color: var(--accent); padding: 12px; border-bottom: 2px solid #334155; }
+        td { padding: 12px; border-bottom: 1px solid #334155; }
+        .del-btn { background: #ef4444; padding: 5px 10px; font-size: 12px; cursor: pointer; color: white; border: none; border-radius: 4px; }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Zuhro.ai</h2>
-        <p>Мои товары</p>
-    </div>
-    <div class="main-content">
+    <div class="side"><h2>Zuhro.ai</h2><p>Dashboard</p><p>Products</p></div>
+    <div class="main">
         <div class="card">
-            <h1>Добавить товар</h1>
-            <div class="form-group">
-                <input type="text" id="name" placeholder="Название товара">
-                <input type="text" id="price" placeholder="Цена ($)">
-                <button onclick="addProduct()">Добавить</button>
-            </div>
-            <table id="productTable">
-                <tr><th>Название</th><th>Цена</th></tr>
+            <h2>Добавить товар</h2>
+            <input type="text" id="name" placeholder="Название">
+            <input type="number" id="price" placeholder="Цена $">
+            <button onclick="add()">Добавить</button>
+            <table id="table">
+                <thead><tr><th>Товар</th><th>Цена</th><th>Действие</th></tr></thead>
+                <tbody id="list"></tbody>
             </table>
         </div>
     </div>
-    <script src="index.js"></script>
+    <script>
+        function add() {
+            const n = document.getElementById('name'), p = document.getElementById('price'), l = document.getElementById('list');
+            if(!n.value || !p.value) return alert('Заполните поля!');
+            const row = l.insertRow();
+            row.innerHTML = `<td>${n.value}</td><td>${p.value} $</td><td><button class="del-btn" onclick="this.parentElement.parentElement.remove()">Удалить</button></td>`;
+            n.value = ''; p.value = '';
+        }
+    </script>
 </body>
 </html>
