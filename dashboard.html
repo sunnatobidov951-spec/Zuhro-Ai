@@ -2,23 +2,53 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Zuhro.ai | Core System</title>
+    <title>Zuhro.ai | Professional Engine</title>
     <style>
-        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
-        .container { width: 90%; max-width: 500px; text-align: center; }
-        .loader { color: #22c55e; font-weight: bold; margin-top: 20px; }
+        :root { --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; --accent: #22c55e; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .module { background: var(--panel); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { background: var(--accent); border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        #display-area { display: grid; gap: 15px; margin-top: 20px; }
+        .item-card { background: #334155; padding: 15px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Zuhro.ai</h1>
-    <p>Система инициализирована.</p>
-    <div id="status" class="loader">Готовность: 100%</div>
+    
+    <div class="module">
+        <h3>Добавление товара</h3>
+        <input type="text" id="name" placeholder="Название">
+        <input type="number" id="price" placeholder="Цена">
+        <textarea id="desc" placeholder="Описание"></textarea>
+        <button onclick="addItem()">Добавить</button>
+    </div>
+
+    <div id="display-area"></div>
 </div>
 
 <script>
-    console.log("Zuhro.ai Core Initialized.");
+    function addItem() {
+        const name = document.getElementById('name').value;
+        const price = document.getElementById('price').value;
+        const desc = document.getElementById('desc').value;
+        
+        if(!name) return alert("Введите название!");
+
+        const area = document.getElementById('display-area');
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `<h4>${name}</h4><p>${desc}</p><p>Цена: ${price} $</p>`;
+        area.appendChild(card);
+        
+        // Очистка полей
+        document.getElementById('name').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('desc').value = '';
+    }
 </script>
 
 </body>
