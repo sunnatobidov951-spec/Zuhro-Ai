@@ -2,16 +2,17 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Zuhro.ai | Professional Engine</title>
+    <title>Zuhro.ai | Full Integration</title>
     <style>
-        :root { --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; --accent: #22c55e; }
+        :root { --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; --accent: #22c55e; --danger: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: auto; }
         .module { background: var(--panel); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { background: var(--accent); border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
-        #display-area { display: grid; gap: 15px; margin-top: 20px; }
-        .item-card { background: #334155; padding: 15px; border-radius: 8px; }
+        button { background: var(--accent); border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
+        .btn-ai { background: #3b82f6; }
+        .btn-del { background: var(--danger); padding: 5px 10px; font-size: 12px; }
+        .item-card { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -24,30 +25,43 @@
         <input type="text" id="name" placeholder="Название">
         <input type="number" id="price" placeholder="Цена">
         <textarea id="desc" placeholder="Описание"></textarea>
-        <button onclick="addItem()">Добавить</button>
+        <button class="btn-ai" onclick="analyzeAI()">✨ Анализ AI</button>
+        <button onclick="addItem()">Добавить на витрину</button>
     </div>
 
+    <h3>Витрина</h3>
     <div id="display-area"></div>
+
+    <h3>🛒 Корзина (Итого: <span id="total">0</span> $)</h3>
+    <div id="cart-area"></div>
 </div>
 
 <script>
+    let total = 0;
+    
+    function analyzeAI() {
+        const name = document.getElementById('name').value;
+        if(!name) return alert("Введите название для анализа!");
+        document.getElementById('desc').value = `Анализирую: ${name}... Это будет эксклюзивный товар с лучшим описанием от Zuhro.ai.`;
+    }
+
     function addItem() {
         const name = document.getElementById('name').value;
-        const price = document.getElementById('price').value;
+        const price = parseFloat(document.getElementById('price').value) || 0;
         const desc = document.getElementById('desc').value;
-        
         if(!name) return alert("Введите название!");
-
-        const area = document.getElementById('display-area');
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.innerHTML = `<h4>${name}</h4><p>${desc}</p><p>Цена: ${price} $</p>`;
-        area.appendChild(card);
         
-        // Очистка полей
-        document.getElementById('name').value = '';
-        document.getElementById('price').value = '';
-        document.getElementById('desc').value = '';
+        const area = document.getElementById('display-area');
+        area.innerHTML += `<div class="item-card"><h4>${name}</h4><p>${desc}</p><p>Цена: ${price} $</p>
+                          <button onclick="addToCart('${name}', ${price})">Купить</button></div>`;
+    }
+
+    function addToCart(name, price) {
+        total += price;
+        document.getElementById('total').innerText = total;
+        const cart = document.getElementById('cart-area');
+        cart.innerHTML += `<div class="item-card">✅ ${name} - ${price} $ 
+                          <button class="btn-del" onclick="this.parentElement.remove()">Удалить</button></div>`;
     }
 </script>
 
