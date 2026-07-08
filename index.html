@@ -2,33 +2,39 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zuhro.ai | Магазин</title>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; padding: 20px; }
-        .product-card { background: #1e293b; padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid #334155; }
-        h1 { text-align: center; color: #22c55e; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 15px; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 20px; }
+        #product-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        .product-card { background: white; border-radius: 16px; padding: 15px; width: 100%; max-width: 320px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; }
+        .product-card h3 { margin: 0 0 10px 0; color: #1e293b; }
+        .product-card p { color: #64748b; font-size: 0.9em; white-space: pre-line; }
+        .btn-buy { width: 100%; padding: 12px; background: #22c55e; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-buy:hover { background: #16a34a; }
     </style>
 </head>
 <body>
 
 <h1>Zuhro.ai | Витрина</h1>
 <div id="product-display">
-    <p style="text-align:center;">Ожидание товара от робота...</p>
+    <p>Ожидание товара от робота...</p>
 </div>
 
 <script>
-    // Робот проверяет, есть ли новый товар
     const data = localStorage.getItem('zuhro_product');
     if (data) {
         const product = JSON.parse(data);
         document.getElementById('product-display').innerHTML = `
             <div class="product-card">
                 <h3>${product.name}</h3>
-                <p style="white-space: pre-line;">${product.description}</p>
-                <button style="width:100%; padding:10px; background:#22c55e; border:none; color:white; border-radius:5px;">Купить сейчас</button>
+                <p>${product.description}</p>
+                <button class="btn-buy">Купить сейчас</button>
             </div>
         `;
     }
 </script>
 </body>
 </html>
+
