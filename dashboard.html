@@ -2,38 +2,41 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Zuhro.ai | AI Copywriter</title>
+    <title>Zuhro.ai | Панель управления</title>
     <style>
-        :root { --bg: #0f172a; --accent: #22c55e; }
-        body { background: var(--bg); color: #f8fafc; font-family: sans-serif; padding: 20px; }
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; }
         .module { background: #1e293b; padding: 20px; border-radius: 12px; }
-        textarea { width: 100%; height: 80px; margin-top: 10px; background: #0f172a; color: white; border: 1px solid #334155; }
-        button { background: var(--accent); border: none; padding: 12px; color: white; cursor: pointer; border-radius: 6px; margin-top: 10px; width: 100%; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        .ai-btn { background: #22c55e; color: white; }
+        .pub-btn { background: #3b82f6; color: white; }
     </style>
 </head>
 <body>
 
 <div class="module">
-    <h2>Zuhro.ai | ИИ-Копирайтер</h2>
-    <input type="text" id="name" placeholder="Название товара" style="width:100%; padding:10px; margin-bottom:10px;">
-    <button onclick="generateDescription()">✍️ Сгенерировать описание</button>
-    <textarea id="output" placeholder="Результат будет здесь..."></textarea>
+    <h2>Zuhro.ai | Цех управления</h2>
+    <input type="text" id="name" placeholder="Название товара">
+    <button class="ai-btn" onclick="generateDescription()">✍️ Сгенерировать описание</button>
+    <textarea id="output" placeholder="Описание будет здесь..." rows="5"></textarea>
+    <button class="pub-btn" onclick="publishProduct()">🚀 Опубликовать на витрину</button>
 </div>
 
 <script>
     function generateDescription() {
         const name = document.getElementById('name').value;
         const output = document.getElementById('output');
-        
-        if(!name) return alert("Введите название товара!");
-        
-        // Робот "пишет" профессиональное описание
-        output.value = `ПРЕМИУМ ТОВАР: ${name.toUpperCase()} \n\n` +
-                       `Наш ${name} — это идеальное сочетание качества и стиля. ` +
-                       `Создан по самым современным стандартам для тех, кто ценит лучшее. ` +
-                       `✅ Гарантия качества \n✅ Быстрая доставка \n✅ Лучшая цена на рынке \n\n` +
-                       `Закажите прямо сейчас и станьте обладателем эксклюзива от Zuhro.ai!`;
+        output.value = `ПРЕМИУМ: ${name.toUpperCase()}\n✅ Гарантия качества\n✅ Быстрая доставка\n✅ Цена: Лучшая на рынке\n\nЗакажите эксклюзив от Zuhro.ai!`;
+    }
+
+    function publishProduct() {
+        const name = document.getElementById('name').value;
+        const desc = document.getElementById('output').value;
+        const product = { name: name, description: desc };
+        localStorage.setItem('zuhro_product', JSON.stringify(product));
+        alert("🚀 Товар отправлен на витрину!");
     }
 </script>
 </body>
 </html>
+
