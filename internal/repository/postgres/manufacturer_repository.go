@@ -7,7 +7,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/zuhroai/backend/internal/domain"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
+
 )
 
 type ManufacturerRepository struct {
