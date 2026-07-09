@@ -7,12 +7,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-		"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
-
+	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
 )
 
 type ProductSource interface {
-	Fetch(ctx context.Context) ([]*domain.Product, error)
+	Fetch(ctx context.Context) ([]domain.Product, error)
 }
 
 type Scraper struct {
@@ -58,10 +57,9 @@ func (s *Scraper) Start(ctx context.Context) error {
 				"error", err,
 			)
 
-			if errors.Is(ctx.Err(), context.Canceled) {
-				return ctx.Err()
+			if errors.Is(err, context.Canceled) {
+				return err
 			}
-
 			continue
 		}
 	}
@@ -86,3 +84,4 @@ func (s *Scraper) Run(ctx context.Context, interval time.Duration) error {
 		}
 	}
 }
+
