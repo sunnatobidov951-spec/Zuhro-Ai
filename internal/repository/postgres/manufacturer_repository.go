@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"x
 )
 
 type ManufacturerRepository struct {
