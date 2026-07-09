@@ -51,12 +51,7 @@ func (s *Scraper) Start(ctx context.Context) error {
 		}
 
 		if err := s.repo.Create(ctx, p); err != nil {
-			s.logger.Error(
-				"create product failed",
-				"product", p.Name,
-				"error", err,
-			)
-
+			s.logger.Error("create product failed", "product", p.Name, "error", err)
 			if errors.Is(err, context.Canceled) {
 				return err
 			}
@@ -84,4 +79,3 @@ func (s *Scraper) Run(ctx context.Context, interval time.Duration) error {
 		}
 	}
 }
-
