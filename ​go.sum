@@ -1,3 +1,4 @@
-github.com/google/uuid v1.6.0 h1:NIvaJDMOsemVw+Px5J525V6V4i9N95aJp9SVwH5GkGk=
-github.com/google/uuid v1.6.0/go.mod h1:TIyPZe3MoP9qV/V68Lq9q9g7N4Y+lM0p69R8lJ1P2m4=
-
+github.com/google/uuid v1.6.0 h1:NIvaJDMO1CLA8+PAoVA5sU0G+7GvR0iQ4n08c5j8X+Q=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe3McqELP5j9j2r9P2D00R8gP21U+3M/a87aL38=
+github.com/lib/pq v1.10.9 h1:W3qF1T2n18q3uC29b+y3y55jS8q63Vd4a/d622fH1Hk=
+github.com/lib/pq v1.10.9/go.mod h1:iYnOa4P13+2FqK8qjK7w67i91qRzJ8d+b2n+3V2l96M=
