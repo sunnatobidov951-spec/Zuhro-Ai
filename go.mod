@@ -1,1 +1,6 @@
 module github.com/sunnatobidov951-spec/Zuhro-Ai-
+
+go 1.22
+
+require github.com/google/uuid v1.6.0
+
