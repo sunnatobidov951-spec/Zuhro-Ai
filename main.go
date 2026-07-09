@@ -2,32 +2,36 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log/slog"
 	"os"
+
+	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/repository/postgres"
 	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/worker"
+	_ "github.com/lib/pq" // не забудь импортировать драйвер postgres
 )
 
 func main() {
+	// 1. Создаем логгер
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	scraper := worker.NewScraper()
-	processor := worker.NewProductProcessor(logger, nil, nil, nil, nil) 
 
-	fmt.Println("🚀 Робот начал поиск...")
-
-	product, err := scraper.Fetch("https://factory-example.com/cap")
+	// 2. Подключаемся к БД (замени строку на свою реальную, если нужно)
+	db, err := sql.Open("postgres", "postgres://user:password@localhost:5432/dbname?sslmode=disable")
 	if err != nil {
-		logger.Error("Ошибка при поиске", "err", err)
+		logger.Error("ошибка подключения к БД", "error", err)
 		return
 	}
-	fmt.Printf("✅ Робот нашел: %s\n", product.Name)
+	defer db.Close()
 
-	processed, err := processor.Process(context.Background(), product, worker.ProcessOptions{})
-	if err != nil {
-		logger.Error("Ошибка обработки", "err", err)
-		return
-	}
+	// 3. Инициализируем репозиторий
+	repo := postgres.NewProductRepository(db)
 
-	fmt.Printf("✨ Обработка завершена! Новый товар: %s\n", processed.Name)
+	// 4. Инициализируем скрейпер (здесь мы передаем реальный repo)
+	// ВАЖНО: тебе нужно передать и реальный source вместо nil
+	scraper := worker.NewScraper(repo, nil, logger) 
+
+	logger.Info("Робот запущен...")
+
+	// Дальше твой код...
 }
-
