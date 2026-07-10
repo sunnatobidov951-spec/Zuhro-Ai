@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/domain"
 )
 
 // ManufacturerRepository handles database operations for manufacturers.
