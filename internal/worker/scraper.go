@@ -45,12 +45,12 @@ func (s *Scraper) Start(ctx context.Context) error {
 			p.ID = uuid.New()
 		}
 
-		if p.Name == "" {
+		if p.Title=="" { 
 			s.logger.Warn("skip product: empty name")
 			continue
 		}
 
-		if err := s.repo.Create(ctx, p); err != nil {
+		if err := s.repo.Create(ctx,&p);err != nil {
 			s.logger.Error("create product failed", "product", p.Name, "error", err)
 			if errors.Is(err, context.Canceled) {
 				return err
