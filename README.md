@@ -1,1 +1,1 @@
-# zukhro-ai
+# Zuhro-Ai
