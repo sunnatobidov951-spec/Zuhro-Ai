@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/domain "
+	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
 )
 
 type ManufacturerRepository struct {
@@ -73,4 +73,3 @@ func (r *ManufacturerRepository) GetAll(ctx context.Context, limit, offset int) 
 
 	return result, nil
 }
-
