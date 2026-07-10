@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/domain"
 )
 
 // ProductProcessor — главный сервис обработки товаров
