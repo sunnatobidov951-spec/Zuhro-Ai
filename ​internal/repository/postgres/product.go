@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/sunnatobidov951-spec/Zuhro-Ai/domain"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai/lnternal/domain"
 )
 
 var allowedSortFields = map[string]string{
