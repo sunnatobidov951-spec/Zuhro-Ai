@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/domain"
+	"zuhroai/internal/domain"
 )
 
 type ProductRepository interface {
