@@ -1,4 +1,4 @@
-module github.com/sunnatobidov951-spec/Zuhro-Ai-
+module github.com/sunnatobidov951-spec/Zuhro-Ai
 
 go 1.22
 
