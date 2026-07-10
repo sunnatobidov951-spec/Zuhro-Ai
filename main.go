@@ -6,8 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-
-	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/repository/postgres"
+"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/repository/postgres"
 	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/worker"
 
 	_ "github.com/lib/pq" // не забудь импортировать драйвер postgres
