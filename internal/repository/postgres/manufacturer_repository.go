@@ -1,76 +1,67 @@
-package postgres
+package repository
 
 import (
 	"context"
 	"database/sql"
 	"fmt"
 
-	"github.com/google/uuid"
-	"github.com/sunnatobidov951-spec/Zuhro Ai/internal/domain"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
 )
 
+// ManufacturerRepository handles database operations for manufacturers.
 type ManufacturerRepository struct {
 	db *sql.DB
 }
 
+// NewManufacturerRepository creates a new ManufacturerRepository instance.
 func NewManufacturerRepository(db *sql.DB) *ManufacturerRepository {
 	return &ManufacturerRepository{db: db}
 }
 
-func (r *ManufacturerRepository) Create(ctx context.Context, m *domain.Manufacturer) error {
-	query := `
-		INSERT INTO manufacturers (
-			id, name, legal_name, country, city, industries, products, 
-			factory_size, workers_count, production_capacity, 
-			minimum_order_quantity, average_production_days, currency, 
-			status, ai_profile, created_at, updated_at
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW(), NOW())
+// Create inserts a new manufacturer into the database and returns its generated ID.
+func (r *ManufacturerRepository) Create(ctx context.Context, m *domain.Manufacturer) (int64, error) {
+	const query = `
+		INSERT INTO manufacturers (name, created_at)
+		VALUES ($1, NOW())
+		RETURNING id
 	`
-	_, err := r.db.ExecContext(ctx, query,
-		m.ID, m.Name, m.LegalName, m.Country, m.City, m.Industries, m.Products,
-		m.FactorySize, m.WorkersCount, m.ProductionCapacity, m.MinimumOrderQuantity,
-		m.AverageProductionDays, m.Currency, m.Status, m.AIProfile,
-	)
+
+	var id int64
+	err := r.db.QueryRowContext(ctx, query, m.Name).Scan(&id)
 	if err != nil {
-		return fmt.Errorf("manufacturer create failed: %w", err)
+		return 0, fmt.Errorf("repository: failed to create manufacturer: %w", err)
 	}
-	return nil
+
+	return id, nil
 }
 
-func (r *ManufacturerRepository) GetAll(ctx context.Context, limit, offset int) ([]*domain.Manufacturer, error) {
-	query := `
-		SELECT 
-			id, name, legal_name, country, city, industries, products, 
-			factory_size, workers_count, production_capacity, 
-			minimum_order_quantity, average_production_days, currency, 
-			status, ai_profile, created_at, updated_at
+// GetAll retrieves all manufacturers from the database.
+func (r *ManufacturerRepository) GetAll(ctx context.Context) ([]domain.Manufacturer, error) {
+	const query = `
+		SELECT id, name, created_at
 		FROM manufacturers
-		LIMIT $1 OFFSET $2
+		ORDER BY id ASC
 	`
-	rows, err := r.db.QueryContext(ctx, query, limit, offset)
+
+	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("repository: failed to query manufacturers: %w", err)
 	}
 	defer rows.Close()
 
-	result := make([]*domain.Manufacturer, 0)
+	var manufacturers []domain.Manufacturer
 
 	for rows.Next() {
-		m := &domain.Manufacturer{}
-		err := rows.Scan(
-			&m.ID, &m.Name, &m.LegalName, &m.Country, &m.City, &m.Industries, &m.Products,
-			&m.FactorySize, &m.WorkersCount, &m.ProductionCapacity, &m.MinimumOrderQuantity,
-			&m.AverageProductionDays, &m.Currency, &m.Status, &m.AIProfile, &m.CreatedAt, &m.UpdatedAt,
-		)
-		if err != nil {
-			return nil, err
+		var m domain.Manufacturer
+		if err := rows.Scan(&m.ID, &m.Name, &m.CreatedAt); err != nil {
+			return nil, fmt.Errorf("repository: failed to scan manufacturer row: %w", err)
 		}
-		result = append(result, m)
+		manufacturers = append(manufacturers, m)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("repository: rows iteration error: %w", err)
 	}
 
-	return result, nil
+	return manufacturers, nil
 }
