@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/sunnatobidov951-spec/Zuhro-Ai-/internal/domain"
 )
 
