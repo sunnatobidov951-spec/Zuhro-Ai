@@ -1,5 +1,3 @@
-module github.com/sunnatobidov951-spec/Zuhro-Ai
-
 module zuhroai
 
 go 1.21
