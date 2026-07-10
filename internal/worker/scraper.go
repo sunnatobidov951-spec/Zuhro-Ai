@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/repository/postgres"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai/internal/domain"
 )
 
 type ProductSource interface {
