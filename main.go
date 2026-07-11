@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"zuhroai/internal/repository/postgres"
+	"Zuhroai/internal/repository/postgres"
 
 	_ "github.com/lib/pq"
 )
