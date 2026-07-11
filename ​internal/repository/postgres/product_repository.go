@@ -43,7 +43,7 @@ func (r *productRepository) Create(ctx context.Context, p *domain.Product) error
 	ctx, span := r.tracer.Start(ctx, "ProductRepository.Create")
 	defer span.End()
 
-	query := `INSERT INTO products (id, manufacturer_id, name, price, description, category, version)
+	query := `INSERT INTO products (p.ID, p.SellerID, p.Title, p.Price description, category, version)
 	VALUES ($1, $2, $3, $4, $5, $6, 1) RETURNING created_at, updated_at`
 
 	err := r.db.QueryRowContext(ctx, query, p.ID, p.ManufacturerID, p.Name, p.Price, p.Description, p.Category).Scan(&p.CreatedAt, &p.UpdatedAt)
