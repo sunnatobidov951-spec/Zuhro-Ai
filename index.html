@@ -1,61 +1,224 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zuhro.ai | Маркетплейс Будущего</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; background: #f9f9f9; color: #333; }
-        header { background: #1a1a1a; color: white; padding: 30px 20px; text-align: center; }
-        
-        .search-container { max-width: 600px; margin: 20px auto; display: flex; }
-        .search-container input { width: 100%; padding: 15px; border: none; border-radius: 5px 0 0 5px; outline: none; }
-        .search-container button { padding: 15px 25px; background: #e67e22; color: white; border: none; border-radius: 0 5px 5px 0; cursor: pointer; font-weight: bold; }
-        
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: 0.4s; border: 1px solid #eee; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .card h3 { margin-top: 0; color: #2c3e50; }
-        .price { font-size: 1.4em; font-weight: 800; color: #e67e22; margin: 15px 0; }
-        .buy-btn { background: #2c3e50; color: white; padding: 10px 20px; border: none; border-radius: 5px; width: 100%; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Zuhro.AI Marketplace</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f6fa;
+color:#111;
+}
+
+header{
+background:#071a3d;
+padding:20px;
+color:white;
+}
+
+.logo{
+font-size:34px;
+font-weight:900;
+color:#d4af37;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.cart{
+font-size:25px;
+}
+
+.search{
+margin-top:20px;
+width:100%;
+padding:16px;
+border-radius:15px;
+border:none;
+font-size:17px;
+}
+
+.categories{
+display:flex;
+gap:12px;
+overflow:auto;
+padding:20px;
+}
+
+.categories div{
+background:white;
+padding:15px 25px;
+border-radius:20px;
+white-space:nowrap;
+}
+
+.hero{
+margin:20px;
+padding:50px 30px;
+border-radius:30px;
+background:linear-gradient(135deg,#071a3d,#d4af37);
+color:white;
+}
+
+.hero h1{
+font-size:42px;
+}
+
+.hero p{
+font-size:20px;
+margin-top:15px;
+}
+
+.products{
+padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+border-radius:25px;
+padding:15px;
+box-shadow:0 10px 30px #ddd;
+}
+
+.card img{
+width:100%;
+height:220px;
+object-fit:cover;
+border-radius:20px;
+}
+
+.price{
+font-size:25px;
+font-weight:bold;
+color:#071a3d;
+margin:10px 0;
+}
+
+button{
+width:100%;
+padding:14px;
+border:0;
+border-radius:15px;
+background:#071a3d;
+color:white;
+font-size:16px;
+}
+
+footer{
+background:#071a3d;
+color:white;
+text-align:center;
+padding:25px;
+margin-top:30px;
+}
+
+</style>
 </head>
+
+
 <body>
 
 <header>
-    <h1>Zuhro.ai</h1>
-    <p>Технологии умного дома — теперь доступнее</p>
-    <div class="search-container">
-        <input type="text" placeholder="Поиск гаджетов...">
-        <button>Найти</button>
-    </div>
+
+<div class="top">
+
+<div class="logo">
+Zuhro.AI
+</div>
+
+<div class="cart">
+🛒
+</div>
+
+</div>
+
+
+<input class="search" placeholder="Поиск миллионов товаров...">
+
 </header>
 
-<div class="container">
-    <h2>Популярное сегодня</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>Смарт-лампа RGB</h3>
-            <p>Голосовое управление, 16 млн цветов. Идеальное решение для атмосферы.</p>
-            <div class="price">250 000 UZS</div>
-            <button class="buy-btn">В корзину</button>
-        </div>
-        <div class="card">
-            <h3>Умный хаб Gateway</h3>
-            <p>Центр управления всеми устройствами вашего дома через один протокол.</p>
-            <div class="price">450 000 UZS</div>
-            <button class="buy-btn">В корзину</button>
-        </div>
-        <div class="card">
-            <h3>Датчик движения Wi-Fi</h3>
-            <p>Умная безопасность: мгновенные уведомления о каждом движении.</p>
-            <div class="price">190 000 UZS</div>
-            <button class="buy-btn">В корзину</button>
-        </div>
-    </div>
+
+<div class="categories">
+
+<div>📱 Электроника</div>
+<div>👕 Одежда</div>
+<div>🏠 Дом</div>
+<div>💎 Luxury</div>
+<div>🚗 Авто</div>
+
 </div>
+
+
+<section class="hero">
+
+<h1>
+Умный маркетплейс будущего
+</h1>
+
+<p>
+Zuhro.AI соединяет покупателей и производителей мира
+</p>
+
+</section>
+
+
+<section class="products">
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>AI Smartphone Pro</h3>
+<div class="price">$699</div>
+<button>Добавить в корзину</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
+<h3>Premium Laptop</h3>
+<div class="price">$1299</div>
+<button>Добавить в корзину</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1558002038-1055907df827">
+<h3>Smart Home AI</h3>
+<div class="price">$399</div>
+<button>Добавить в корзину</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3">
+<h3>Fashion Premium</h3>
+<div class="price">$249</div>
+<button>Добавить в корзину</button>
+</div>
+
+
+</section>
+
+
+<footer>
+Zuhro.AI © Marketplace
+</footer>
+
 
 </body>
 </html>
