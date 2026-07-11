@@ -1,106 +1,135 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<link rel="stylesheet" href="style.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Zuhro.AI Store</title>
+<title>Zuhro.AI Marketplace</title>
 
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
 }
 
-body {
-    background: #f5f6fa;
-    color: #111;
+body{
+    background:#f4f6fb;
+    color:#111;
 }
 
-header {
-    background: #071a3d;
-    padding: 20px;
-    color: white;
+header{
+    background:#071a3d;
+    padding:20px;
+    color:white;
 }
 
-.logo {
-    font-size: 30px;
-    font-weight: bold;
-    color: #d4af37;
+.logo{
+    font-size:32px;
+    font-weight:900;
+    color:#d4af37;
 }
 
-.search {
-    margin-top: 15px;
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    border: none;
-    font-size: 16px;
+.search{
+    margin-top:20px;
+    width:100%;
+    padding:16px;
+    border-radius:12px;
+    border:0;
+    font-size:16px;
 }
 
-.banner {
-    margin: 20px;
-    padding: 40px;
-    border-radius: 20px;
-    background: linear-gradient(135deg,#071a3d,#d4af37);
-    color: white;
+.menu{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+    overflow:auto;
 }
 
-.banner h1 {
-    font-size: 36px;
-}
-
-.categories {
-    display: flex;
-    gap: 10px;
-    padding: 20px;
-    overflow-x: auto;
-}
-
-.category {
+.menu div{
     background:white;
-    padding:15px 25px;
-    border-radius:15px;
-    white-space:nowrap;
+    color:#071a3d;
+    padding:12px 20px;
+    border-radius:20px;
 }
 
-.products {
+.hero{
+    margin:20px;
+    padding:50px 30px;
+    border-radius:25px;
+    background:linear-gradient(135deg,#071a3d,#d4af37);
+    color:white;
+}
+
+.hero h1{
+    font-size:40px;
+}
+
+.hero p{
+    margin-top:15px;
+    font-size:18px;
+}
+
+.products{
+    padding:20px;
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:20px;
-    padding:20px;
 }
 
-.card {
+.card{
     background:white;
-    border-radius:20px;
+    border-radius:25px;
     padding:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
 }
 
-.card img {
+.card img{
     width:100%;
-    border-radius:15px;
+    height:220px;
+    object-fit:cover;
+    border-radius:20px;
 }
 
-.price {
-    color:#071a3d;
-    font-size:22px;
+.card h3{
+    margin-top:15px;
+}
+
+.price{
+    color:#d4af37;
+    font-size:24px;
     font-weight:bold;
     margin:10px 0;
 }
 
-button {
+button{
     width:100%;
-    padding:12px;
-    border:none;
-    border-radius:10px;
+    padding:14px;
     background:#071a3d;
     color:white;
-    cursor:pointer;
+    border:0;
+    border-radius:15px;
+    font-size:16px;
+}
+
+.cart{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:#d4af37;
+    color:#071a3d;
+    padding:18px;
+    border-radius:50%;
+    font-size:25px;
+}
+
+footer{
+    background:#071a3d;
+    color:white;
+    text-align:center;
+    padding:25px;
+    margin-top:30px;
 }
 
 </style>
@@ -109,53 +138,80 @@ button {
 <body>
 
 <header>
+
 <div class="logo">Zuhro.AI</div>
 
-<input class="search" placeholder="Поиск товаров...">
+<input class="search" placeholder="Поиск товаров AI...">
+
+<div class="menu">
+<div>Электроника</div>
+<div>Одежда</div>
+<div>Дом</div>
+<div>Красота</div>
+<div>Авто</div>
+</div>
 
 </header>
 
 
-<section class="banner">
+<section class="hero">
+
 <h1>Будущее покупок с AI</h1>
-<p>Умный маркетплейс нового поколения</p>
+
+<p>
+Умный маркетплейс нового поколения.
+Лучшие товары от производителей мира.
+</p>
+
 </section>
-
-
-<div class="categories">
-<div class="category">Электроника</div>
-<div class="category">Одежда</div>
-<div class="category">Дом</div>
-<div class="category">Красота</div>
-</div>
 
 
 <section class="products">
 
 <div class="card">
-<img src="https://via.placeholder.com/400">
-<h3>AI Smartphone</h3>
-<div class="price">$499</div>
-<button>В корзину</button>
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Smart AI Phone</h3>
+<div class="price">$699</div>
+<button>🛒 В корзину</button>
 </div>
 
 
 <div class="card">
-<img src="https://via.placeholder.com/400">
+<img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
 <h3>Premium Laptop</h3>
-<div class="price">$999</div>
-<button>В корзину</button>
+<div class="price">$1299</div>
+<button>🛒 В корзину</button>
 </div>
 
 
 <div class="card">
-<img src="https://via.placeholder.com/400">
+<img src="https://images.unsplash.com/photo-1558002038-1055907df827">
 <h3>Smart Home</h3>
-<div class="price">$299</div>
-<button>В корзину</button>
+<div class="price">$399</div>
+<button>🛒 В корзину</button>
 </div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3">
+<h3>Luxury Fashion</h3>
+<div class="price">$249</div>
+<button>🛒 В корзину</button>
+</div>
+
 
 </section>
+
+
+<div class="cart">
+🛒
+</div>
+
+
+<footer>
+Zuhro.AI © 2026
+</footer>
+
 
 </body>
 </html>
