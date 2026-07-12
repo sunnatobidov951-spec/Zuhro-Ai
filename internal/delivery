@@ -1,0 +1,139 @@
+package delivery
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"log"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
+)
+
+// --- Ошибки, которые должен возвращать ZuhroPricingEngine ---
+var (
+	ErrProductNotFound = errors.New("product not found")
+	ErrPriceUnavailable = errors.New("price temporarily unavailable")
+)
+
+// --- Интерфейс движка ---
+type PriceEngine interface {
+	CalculatePrice(ctx context.Context, productID string) (float64, error)
+}
+
+// --- DTO ---
+type PriceResponse struct {
+	Price    float64 `json:"price"`
+	Currency string  `json:"currency"`
+}
+
+type ErrorResponse struct {
+	Error     string `json:"error"`
+	Code      string `json:"code"`
+	RequestID string `json:"request_id"`
+}
+
+// --- Handler ---
+type PriceHandler struct {
+	Engine         PriceEngine
+	RequestTimeout time.Duration
+}
+
+func NewPriceHandler(engine PriceEngine) *PriceHandler {
+	return &PriceHandler{
+		Engine:         engine,
+		RequestTimeout: 5 * time.Second,
+	}
+}
+
+func (h *PriceHandler) GetPrice(w http.ResponseWriter, r *http.Request) {
+	requestID := uuid.NewString()
+	start := time.Now()
+
+	defer func() {
+		if rec := recover(); rec != nil {
+			log.Printf("[%s] PANIC in GetPrice: %v", requestID, rec)
+			writeError(w, http.StatusInternalServerError, "internal_error", "internal error", requestID)
+		}
+	}()
+
+	productID := chi.URLParam(r, "id")
+	if err := validateProductID(productID); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid_product_id", err.Error(), requestID)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), h.RequestTimeout)
+	defer cancel()
+
+	price, err := h.Engine.CalculatePrice(ctx, productID)
+	elapsed := time.Since(start)
+
+	if err != nil {
+		h.handleEngineError(w, err, productID, requestID, elapsed)
+		return
+	}
+
+	if price < 0 || price != price { // price != price ловит NaN
+		log.Printf("[%s] invalid price value for product %s: %v", requestID, productID, price)
+		writeError(w, http.StatusInternalServerError, "invalid_price", "invalid price calculated", requestID)
+		return
+	}
+
+	log.Printf("[%s] priced product %s in %s -> %.2f UZS", requestID, productID, elapsed, price)
+
+	writeJSON(w, http.StatusOK, PriceResponse{
+		Price:    roundToTwoDecimals(price),
+		Currency: "UZS",
+	})
+}
+
+func (h *PriceHandler) handleEngineError(w http.ResponseWriter, err error, productID, requestID string, elapsed time.Duration) {
+	switch {
+	case errors.Is(err, ErrProductNotFound):
+		writeError(w, http.StatusNotFound, "product_not_found", "product not found", requestID)
+
+	case errors.Is(err, ErrPriceUnavailable):
+		writeError(w, http.StatusServiceUnavailable, "price_unavailable", "price temporarily unavailable", requestID)
+
+	case errors.Is(err, context.DeadlineExceeded):
+		log.Printf("[%s] timeout after %s for product %s", requestID, elapsed, productID)
+		writeError(w, http.StatusGatewayTimeout, "timeout", "pricing calculation timed out", requestID)
+
+	default:
+		log.Printf("[%s] unexpected engine error for product %s (after %s): %v", requestID, productID, elapsed, err)
+		writeError(w, http.StatusInternalServerError, "internal_error", "failed to calculate price", requestID)
+	}
+}
+
+// --- Валидация ---
+func validateProductID(id string) error {
+	if id == "" {
+		return errors.New("product id is required")
+	}
+	if len(id) > 128 {
+		return errors.New("product id too long")
+	}
+	return nil
+}
+
+// --- Утилиты ---
+func roundToTwoDecimals(v float64) float64 {
+	rounded, _ := strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
+	return rounded
+}
+
+func writeJSON(w http.ResponseWriter, status int, payload interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	if err := json.NewEncoder(w).Encode(payload); err != nil {
+		log.Printf("failed to encode response: %v", err)
+	}
+}
+
+func writeError(w http.ResponseWriter, status int, code, message, requestID string) {
+	writeJSON(w, status, ErrorResponse{Error: message, Code: code, RequestID: requestID})
+}
