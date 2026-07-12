@@ -1,0 +1,10 @@
+{
+  "min_margin": 1.10,
+  "max_margin": 2.50,
+  "currency": "UZS",
+  "display_settings": {
+    "show_discount": true,
+    "highlight_featured": true
+  }
+}
+
