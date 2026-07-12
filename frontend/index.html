@@ -1,109 +1,56 @@
-package postgres
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-import (
-	"context"
-	"database/sql"
-	"fmt"
-	"strings"
-	"time"
+<title>Zuhro.AI Marketplace</title>
 
-	"github.com/google/uuid"
-	"zuhroai/internal/domain"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
-)
+<link rel="stylesheet" href="style.css">
+</head>
 
-type productRepository struct {
-	db     *sql.DB
-	tracer trace.Tracer
-}
+<body>
 
-func NewProductRepository(db *sql.DB) domain.ProductRepository {
-	return &productRepository{
-		db:     db,
-		tracer: otel.Tracer("product.repository"),
-	}
-}
+<header class="header">
 
-func (r *productRepository) WithTx(ctx context.Context, fn func(repo domain.ProductRepository) error) error {
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return fmt.Errorf("begin tx: %w", err)
-	}
-	txRepo := &productRepository{db: tx, tracer: r.tracer}
-	if err := fn(txRepo); err != nil {
-		tx.Rollback()
-		return err
-	}
-	return tx.Commit()
-}
+<div class="logo">
+Zuhro.AI
+</div>
 
-func (r *productRepository) Create(ctx context.Context, p *domain.Product) error {
-	ctx, span := r.tracer.Start(ctx, "ProductRepository.Create")
-	defer span.End()
+<div class="search-box">
+<input placeholder="Поиск товаров с AI...">
+</div>
 
-	query := `INSERT INTO products (id, seller_id, title, price, description, category)
-	VALUES ($1, $2, $3, $4, $5, $6)`
-	
-	_, err := r.db.ExecContext(ctx, query, p.ID, p.SellerID, p.Title, p.Price, p.Description, p.Category)
-	if err != nil {
-		return fmt.Errorf("create product failed: %w", err)
-	}
-	return nil
-}
+<div class="actions">
+<button>Войти</button>
+<button>🛒</button>
+</div>
 
-func (r *productRepository) Update(ctx context.Context, p *domain.Product) error {
-	ctx, span := r.tracer.Start(ctx, "ProductRepository.Update")
-	defer span.End()
+</header>
 
-	query := `UPDATE products SET title = $1, price = $2, description = $3, category = $4, updated_at = NOW() WHERE id = $5`
-	_, err := r.db.ExecContext(ctx, query, p.Title, p.Price, p.Description, p.Category, p.ID)
-	if err != nil {
-		return fmt.Errorf("update failed: %w", err)
-	}
-	return nil
-}
 
-func (r *productRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Product, error) {
-	ctx, span := r.tracer.Start(ctx, "ProductRepository.GetByID")
-	defer span.End()
+<section class="categories">
 
-	query := `SELECT id, seller_id, title, price, description, category FROM products WHERE id = $1`
-	p := &domain.Product{}
-	err := r.db.QueryRowContext(ctx, query, id).Scan(&p.ID, &p.SellerID, &p.Title, &p.Price, &p.Description, &p.Category)
-	return p, err
-}
+<div>📱 Электроника</div>
+<div>👕 Одежда</div>
+<div>🏠 Дом</div>
+<div>🚗 Авто</div>
+<div>💎 Премиум</div>
 
-func (r *productRepository) Archive(ctx context.Context, id uuid.UUID) error {
-	_, err := r.db.ExecContext(ctx, "UPDATE products SET status = 'archived' WHERE id = $1", id)
-	return err
-}
+</section>
 
-func (r *productRepository) Restore(ctx context.Context, id uuid.UUID) error {
-	_, err := r.db.ExecContext(ctx, "UPDATE products SET status = 'active' WHERE id = $1", id)
-	return err
-}
 
-func (r *productRepository) SemanticSearch(ctx context.Context, vector []float32, limit int) ([]*domain.Product, error) {
-	ctx, span := r.tracer.Start(ctx, "ProductRepository.SemanticSearch")
-	defer span.End()
-    // Здесь старый запрос сохранен, но поля приведены к новым
-	query := `SELECT id, seller_id, title, price, description, category FROM products ORDER BY embedding <=> $1 LIMIT $2`
-	rows, err := r.db.QueryContext(ctx, query, vector, limit)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+<section class="hero">
 
-	var products []*domain.Product
-	for rows.Next() {
-		p := &domain.Product{}
-		err := rows.Scan(&p.ID, &p.SellerID, &p.Title, &p.Price, &p.Description, &p.Category)
-		if err != nil {
-			return nil, err
-		}
-		products = append(products, p)
-	}
-	return products, nil
-}
+<h1>Умный маркетплейс нового поколения</h1>
 
+<p>
+Покупайте товары напрямую от производителей с помощью AI.
+</p>
+
+</section>
+
+
+<section class="products">
+
+<h2>Популярные товары</h2>
