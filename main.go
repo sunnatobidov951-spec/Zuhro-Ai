@@ -36,3 +36,8 @@ func main() {
 
 	log.Println("Zuhro.AI server started")
 }
+// Создаем сервис
+productService := service.NewProductService(productRepo)
+
+// Создаем хендлер, передавая туда сервис
+priceHandler := delivery.NewPriceHandler(productService)
