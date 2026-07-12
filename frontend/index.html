@@ -1,217 +1,109 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+package postgres
 
-<title>Zuhro.AI Marketplace</title>
+import (
+	"context"
+	"database/sql"
+	"fmt"
+	"strings"
+	"time"
 
-<link rel="stylesheet" href="style.css">
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
+	"github.com/google/uuid"
+	"zuhroai/internal/domain"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
+)
+
+type productRepository struct {
+	db     *sql.DB
+	tracer trace.Tracer
 }
 
-body{
-    background:#f4f6fb;
-    color:#111;
+func NewProductRepository(db *sql.DB) domain.ProductRepository {
+	return &productRepository{
+		db:     db,
+		tracer: otel.Tracer("product.repository"),
+	}
 }
 
-header{
-    background:#071a3d;
-    padding:20px;
-    color:white;
+func (r *productRepository) WithTx(ctx context.Context, fn func(repo domain.ProductRepository) error) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("begin tx: %w", err)
+	}
+	txRepo := &productRepository{db: tx, tracer: r.tracer}
+	if err := fn(txRepo); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
-.logo{
-    font-size:32px;
-    font-weight:900;
-    color:#d4af37;
+func (r *productRepository) Create(ctx context.Context, p *domain.Product) error {
+	ctx, span := r.tracer.Start(ctx, "ProductRepository.Create")
+	defer span.End()
+
+	query := `INSERT INTO products (id, seller_id, title, price, description, category)
+	VALUES ($1, $2, $3, $4, $5, $6)`
+	
+	_, err := r.db.ExecContext(ctx, query, p.ID, p.SellerID, p.Title, p.Price, p.Description, p.Category)
+	if err != nil {
+		return fmt.Errorf("create product failed: %w", err)
+	}
+	return nil
 }
 
-.search{
-    margin-top:20px;
-    width:100%;
-    padding:16px;
-    border-radius:12px;
-    border:0;
-    font-size:16px;
+func (r *productRepository) Update(ctx context.Context, p *domain.Product) error {
+	ctx, span := r.tracer.Start(ctx, "ProductRepository.Update")
+	defer span.End()
+
+	query := `UPDATE products SET title = $1, price = $2, description = $3, category = $4, updated_at = NOW() WHERE id = $5`
+	_, err := r.db.ExecContext(ctx, query, p.Title, p.Price, p.Description, p.Category, p.ID)
+	if err != nil {
+		return fmt.Errorf("update failed: %w", err)
+	}
+	return nil
 }
 
-.menu{
-    display:flex;
-    gap:15px;
-    margin-top:20px;
-    overflow:auto;
+func (r *productRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Product, error) {
+	ctx, span := r.tracer.Start(ctx, "ProductRepository.GetByID")
+	defer span.End()
+
+	query := `SELECT id, seller_id, title, price, description, category FROM products WHERE id = $1`
+	p := &domain.Product{}
+	err := r.db.QueryRowContext(ctx, query, id).Scan(&p.ID, &p.SellerID, &p.Title, &p.Price, &p.Description, &p.Category)
+	return p, err
 }
 
-.menu div{
-    background:white;
-    color:#071a3d;
-    padding:12px 20px;
-    border-radius:20px;
+func (r *productRepository) Archive(ctx context.Context, id uuid.UUID) error {
+	_, err := r.db.ExecContext(ctx, "UPDATE products SET status = 'archived' WHERE id = $1", id)
+	return err
 }
 
-.hero{
-    margin:20px;
-    padding:50px 30px;
-    border-radius:25px;
-    background:linear-gradient(135deg,#071a3d,#d4af37);
-    color:white;
+func (r *productRepository) Restore(ctx context.Context, id uuid.UUID) error {
+	_, err := r.db.ExecContext(ctx, "UPDATE products SET status = 'active' WHERE id = $1", id)
+	return err
 }
 
-.hero h1{
-    font-size:40px;
+func (r *productRepository) SemanticSearch(ctx context.Context, vector []float32, limit int) ([]*domain.Product, error) {
+	ctx, span := r.tracer.Start(ctx, "ProductRepository.SemanticSearch")
+	defer span.End()
+    // Здесь старый запрос сохранен, но поля приведены к новым
+	query := `SELECT id, seller_id, title, price, description, category FROM products ORDER BY embedding <=> $1 LIMIT $2`
+	rows, err := r.db.QueryContext(ctx, query, vector, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var products []*domain.Product
+	for rows.Next() {
+		p := &domain.Product{}
+		err := rows.Scan(&p.ID, &p.SellerID, &p.Title, &p.Price, &p.Description, &p.Category)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+	return products, nil
 }
 
-.hero p{
-    margin-top:15px;
-    font-size:18px;
-}
-
-.products{
-    padding:20px;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:white;
-    border-radius:25px;
-    padding:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,.1);
-}
-
-.card img{
-    width:100%;
-    height:220px;
-    object-fit:cover;
-    border-radius:20px;
-}
-
-.card h3{
-    margin-top:15px;
-}
-
-.price{
-    color:#d4af37;
-    font-size:24px;
-    font-weight:bold;
-    margin:10px 0;
-}
-
-button{
-    width:100%;
-    padding:14px;
-    background:#071a3d;
-    color:white;
-    border:0;
-    border-radius:15px;
-    font-size:16px;
-}
-
-.cart{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    background:#d4af37;
-    color:#071a3d;
-    padding:18px;
-    border-radius:50%;
-    font-size:25px;
-}
-
-footer{
-    background:#071a3d;
-    color:white;
-    text-align:center;
-    padding:25px;
-    margin-top:30px;
-}
-
-</style>
-</head>
-
-<body>
-
-<header>
-
-<div class="logo">Zuhro.AI</div>
-
-<input class="search" placeholder="Поиск товаров AI...">
-
-<div class="menu">
-<div>Электроника</div>
-<div>Одежда</div>
-<div>Дом</div>
-<div>Красота</div>
-<div>Авто</div>
-</div>
-
-</header>
-
-
-<section class="hero">
-
-<h1>Будущее покупок с AI</h1>
-
-<p>
-Умный маркетплейс нового поколения.
-Лучшие товары от производителей мира.
-</p>
-
-</section>
-
-
-<section class="products">
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
-<h3>Smart AI Phone</h3>
-<div class="price">$699</div>
-<button>🛒 В корзину</button>
-</div>
-
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
-<h3>Premium Laptop</h3>
-<div class="price">$1299</div>
-<button>🛒 В корзину</button>
-</div>
-
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1558002038-1055907df827">
-<h3>Smart Home</h3>
-<div class="price">$399</div>
-<button>🛒 В корзину</button>
-</div>
-
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3">
-<h3>Luxury Fashion</h3>
-<div class="price">$249</div>
-<button>🛒 В корзину</button>
-</div>
-
-
-</section>
-
-
-<div class="cart">
-🛒
-</div>
-
-
-<footer>
-Zuhro.AI © 2026
-</footer>
-
-
-</body>
-</html>
