@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"github.com/sunnatobidov951-spec/Zuhro-Ai/core/repository"
 )
 
 type SearchContext struct {
@@ -15,6 +16,7 @@ type SearchResult struct {
 	Query   string
 	Intent  string
 	Message string
+	Product *repository.Product
 }
 
 var ErrEmptyQuery = errors.New("query cannot be empty")
@@ -27,22 +29,16 @@ func PerformFastSearch(ctx SearchContext) (*SearchResult, error) {
 
 	intent := normalizeIntent(ctx.UserIntent)
 
-	var message string
-	switch intent {
-	case "buy":
-		message = fmt.Sprintf("Поиск товаров: %s", query)
-	case "info":
-		message = fmt.Sprintf("Поиск информации: %s", query)
-	case "compare":
-		message = fmt.Sprintf("Сравнение вариантов по запросу: %s", query)
-	default:
-		message = fmt.Sprintf("Общий анализ запроса: %s", query)
+	product, err := repository.GetProductByID(1)
+	if err != nil {
+		return nil, fmt.Errorf("не удалось получить товар: %w", err)
 	}
 
 	return &SearchResult{
 		Query:   query,
 		Intent:  intent,
-		Message: message,
+		Message: fmt.Sprintf("Результат для: %s", query),
+		Product: product,
 	}, nil
 }
 
